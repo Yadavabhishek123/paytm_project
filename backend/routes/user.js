@@ -38,8 +38,8 @@ app.post("/signup", async(req, res) => {
     const user = await User.create({
         username:req.body.username,
         password:req.body.password,
-        FirstName:req.body.FisrtName,
-        LastName:req.body.LastName
+        firstName:req.body.fisrtName,
+        lastName:req.body.lastName
     })
     const userId = user._id; // what is this
 
