@@ -1,8 +1,9 @@
 import express from 'express';
-import {User} from "../db"
+import {Account, User} from "../db"
 import zod from "zod";                      // used for input validation
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../config";
+import authMiddleware from "../middleware"
 
 const app = express();
 const router = express.Router();
@@ -40,15 +41,21 @@ app.post("/signup", async(req, res) => {
         FirstName:req.body.FisrtName,
         LastName:req.body.LastName
     })
-
     const userId = user._id; // what is this
+
+    // Create an account for this user in the starting
+    Account.create({
+        userId,
+        Balance: 1 + Math.random()*10000
+    })
+
     const token = jwt.sign({userId}, JWT_SECRET);
     res.json({
         message:"User Created Successfully",
         token: token
     })
-
 })
+
 
 const signinbody = zod.object({
     username:zod.string(),
@@ -83,6 +90,56 @@ app.post("/singin", async(req, res)=>{
         message: "Error while logging in"
     })
 
+})
+
+
+
+const updateBody = zod.object({
+	password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
+})
+
+router.put("/", authMiddleware, async (req, res) => {
+    const { success } = updateBody.safeParse(req.body)
+    if (!success) {
+        res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+
+	await User.updateOne({ _id: req.userId }, req.body);
+	
+    res.json({
+        message: "Updated successfully"
+    })
+})
+
+
+// get user from backend via given filter query parameter
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
 })
 
 
