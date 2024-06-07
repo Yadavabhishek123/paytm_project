@@ -1,6 +1,6 @@
 import express from "express";
-import { Account } from "../db";
-import authMiddleware from "../middleware"
+import { Account } from "../db.js";
+import authMiddleware from "../middleware.js"
 import mongoose from "mongoose"
 
 const router = express.Router();
@@ -119,6 +119,4 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     });
 });
 
-module.exports = {
-    router
-}
+export default router;

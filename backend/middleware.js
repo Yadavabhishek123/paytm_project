@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "./config";
+import { JWT_SECRET } from "./config.js";
 
 // this middleware verify the give token in header
 
@@ -21,6 +21,4 @@ const authmiddleware = (req, res, next) => {
     }
 }
 
-module.exports ={
-    authmiddleware
-}
+export default authmiddleware;

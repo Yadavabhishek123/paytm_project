@@ -1,9 +1,9 @@
 import express from 'express';
-import {Account, User} from "../db"
 import zod from "zod";                      // used for input validation
 import jwt from "jsonwebtoken";
-import {JWT_SECRET} from "../config";
-import authMiddleware from "../middleware"
+import {JWT_SECRET} from "../config.js";
+import authMiddleware from "../middleware.js"
+import {Account, User} from  "../db.js";
 
 const app = express();
 const router = express.Router();
@@ -11,7 +11,7 @@ const signupbody = zod.object({
     username:zod.string().email().min(3).max(30),
     password:zod.string().min(6),
     FirstName:zod.string().max(50),
-    LastName:zod.stiring().max(50)
+    LastName:zod.string().max(50)
 });
 
 app.post("/signup", async(req, res) => {
@@ -144,4 +144,4 @@ router.get("/bulk", async (req, res) => {
 
 
 
-module.exports = router;
+export default router;

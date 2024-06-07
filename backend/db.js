@@ -1,5 +1,7 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose" ;
 // here i will make user schema
+import dotenv from "dotenv";
+dotenv.config();
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -45,8 +47,5 @@ const AccountsSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Account = mongoose.model('Account', AccountsSchema);
 
-module.exports = {
-    User,
-    Account
-};
+export {Account, User};
 
